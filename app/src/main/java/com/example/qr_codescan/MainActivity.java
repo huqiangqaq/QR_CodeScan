@@ -22,19 +22,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.squareup.okhttp.Headers;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.StringCallback;
 
-import java.io.DataOutput;
+import com.squareup.okhttp.MediaType;
+
+
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,12 +37,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
-import okhttp3.Call;
+
 
 
 
@@ -74,29 +63,26 @@ public class MainActivity extends Activity {
 	 * 图片
 	 */
 	//扫描二维码的结果
+	private int code;
 	private String Result = "";
 	private ImageView mimg_show;
 	private Button btn_start,btn_end;
 	private File currentImageFile = null;
-	private SweetAlertDialog dialog;
-	private boolean isLoginSuccess = false;
+	private boolean isLoginSuccess = true;
 	private String filename = "";
 	private Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
-			switch (msg.what){
-				case 0x123:
-					dialog.changeAlertType(SweetAlertDialog.SUCCESS_TYPE);
-					dialog.setTitleText("上传成功");
-					dialog.setCancelable(true);
-					dialog.show();
-					break;
-
-			}
+				switch (msg.what){
+					case 0x123:
+						Toast.makeText(MainActivity.this,"上传成功",Toast.LENGTH_SHORT).show();
+						break;
+					case 0x124:
+						Toast.makeText(MainActivity.this,"上传失败",Toast.LENGTH_SHORT).show();
+						break;
+				}
 		}
 	};
-
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,48 +91,19 @@ public class MainActivity extends Activity {
 		if (!checkCameraHardware(MainActivity.this)){
 			Toast.makeText(MainActivity.this,"相机不可用，请更换手机",Toast.LENGTH_LONG).show();
 		}
-		dialog = new SweetAlertDialog(MainActivity.this,SweetAlertDialog.PROGRESS_TYPE);
-		dialog.setTitleText("正在上传中");
-		dialog.setCancelable(false);
-		OkHttpUtils.post().url(Constants.LOGINURL)
-				.addParams("username", "admin")
-				.addParams("password","123456")
-				.addParams("flag","true")
-				.build()
-				.execute(new StringCallback() {
-					@Override
-					public void onError(Call call, Exception e) {
-						Toast.makeText(MainActivity.this, "登陆失败，网络错误", Toast.LENGTH_SHORT).show();
-					}
-
-					@Override
-					public void onResponse(String response) {
-						isLoginSuccess = true;
-					}
-				});
-		
 		mTextView = (TextView) findViewById(R.id.result); 
 		mimg_show = (ImageView) findViewById(R.id.img_show);
 		btn_start = (Button) findViewById(R.id.btn_start);
 		btn_end = (Button) findViewById(R.id.btn_end);
 
-
-
 		//扫描二维码
-		Button mButton = (Button) findViewById(R.id.button1);
-		mButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if (isLoginSuccess){
-					Intent intent = new Intent();
-					intent.setClass(MainActivity.this, MipcaActivityCapture.class);
-					intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
-				}
+		Intent intent = new Intent();
+		intent.setClass(MainActivity.this, MipcaActivityCapture.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivityForResult(intent, SCANNIN_GREQUEST_CODE);
+		//扫描二维码
+//		Button mButton = (Button) findViewById(R.id.button1);
 
-			}
-		});
 		//拍摄完图片之后上传给服务器
 		btn_start.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -233,110 +190,48 @@ public class MainActivity extends Activity {
 			}
 			break;
 			case START_UPLOAD:
-				dialog.show();
 				long lenth = currentImageFile.length();
-				//模拟上传
-//				OkHttpUtils.postFile()
-//						.addParams("cardnum",Result)
-//					.url(Constants.UPLOADPAHT_Start)
-//					.file(currentImageFile)
-//					.build()
-//					.execute(new StringCallback() {
-//						@Override
-//						public void onError(Call call, Exception e) {
-//
-//						}
-//
-//						@Override
-//						public void onResponse(String response) {
-//							Log.d("huqiang",response.toString());
-//						}
-//					});
-//				Glide.with(MainActivity.this).load(currentImageFile).diskCacheStrategy(DiskCacheStrategy.ALL).into(mimg_show);
-//				OkHttpClient client = new OkHttpClient();
-//				RequestBody requestBody = new MultipartBuilder()
-//						.type(MultipartBuilder.FORM)
-//						.addPart(
-//								Headers.of("Content-Disposition", "form-data; name=\"cardnum\""),
-//								RequestBody.create(null, Result))
-//						.addPart(
-//								Headers.of("Content-Disposition", "form-data; name=\"image\""),
-//								RequestBody.create(MEDIA_TYPE_PNG,currentImageFile)).build();
-//
-//								com.squareup.okhttp.Request request = new com.squareup.okhttp.Request.Builder()
-//										.url(Constants.UPLOADPAHT_Start)
-//										.post(requestBody)
-//										.build();
-//				try {
-//					Response response =client.newCall(request).execute();
-//					System.out.println(response.body().toString());
-//					if (!response.isSuccessful())throw new IOException("unexpected code"+response);
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
+				//上传图片
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						//							uploadForm(map,"upFile",currentImageFile,filename,Constants.UPLOADPAHT_Start);
-						String string = uploadFile(currentImageFile,Constants.URL);
+						try {
+
+							int code = uploadForm(map,"upFile",currentImageFile,filename,Constants.UPLOADPAHT_Start);
+							if (code == 200){
+								handler.sendEmptyMessage(0x123);
+							}else {
+								handler.sendEmptyMessage(0x123);
+							}
+
+
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 
 					}
 				}).start();
-//				OkHttpUtils.post()
-//						.addFile("upFile",filename,currentImageFile)
-//						.url(Constants.UPLOADPAHT_Start)
-//						.params(map)
-//						.build()
-//						.execute(new StringCallback() {
-//							@Override
-//							public void onError(Call call, Exception e) {
-//
-//							}
-//
-//							@Override
-//							public void onResponse(String response) {
-//								Log.d("huqiang",response.toString());
-//							}
-//						});
 
 				break;
 			case END_UPLOAD:
-				dialog.show();
 				long len = currentImageFile.length();
-				//模拟上传
-				//            OkHttpUtils.postFile()
-//                    .url("http://www.baidu.com")
-//                    .file(currentImageFile)
-//                    .build()
-//                    .execute(new StringCallback() {
-//                        @Override
-//                        public void onError(Call call, Exception e) {
-//
-//                        }
-//
-//                        @Override
-//                        public void onResponse(String response) {
-//
-//                        }
-//
-//                        @Override
-//                        public void inProgress(float progress) {
-//                            super.inProgress(progress);
-//                        }
-//                    });
-//				Glide.with(MainActivity.this).load(currentImageFile).diskCacheStrategy(DiskCacheStrategy.ALL).into(mimg_show);
-//				dialog.changeAlertType(SweetAlertDialog.PROGRESS_TYPE);
-//				dialog.getProgressHelper().setBarColor(Color.parseColor("#a5dc86"));
-//				dialog.setTitleText("正在上传");
-//				dialog.setCancelable(false);
-//				dialog.show();
-//				new Timer().schedule(new TimerTask() {
-//					@Override
-//					public void run() {
-//						handler.sendEmptyMessage(0x124);
-//
-//					}
-//				}, 3000);
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							int code = uploadForm(map,"upFile",currentImageFile,filename,Constants.UPLOADPATH_END);
+							if (code==200){
+								handler.sendEmptyMessage(0x123);
+							}else {
+								handler.sendEmptyMessage(0x124);
+							}
+
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+
 				break;
 		}
     }
@@ -350,7 +245,7 @@ public class MainActivity extends Activity {
 				return false;
 			}
 	}
-	public void uploadForm(Map<String, String> params, String fileFormName,
+	public int uploadForm(Map<String, String> params, String fileFormName,
 						   File uploadFile, String newFileName, String urlStr)
 			throws IOException {
 		if (newFileName == null || newFileName.trim().equals("")) {
@@ -405,11 +300,11 @@ public class MainActivity extends Activity {
 		out.close();
 		if (conn.getResponseCode() == 200) {
 			String string = conn.getResponseMessage();
-			Log.d("huqiang",conn.getResponseMessage());
+			Log.d("huqiang", conn.getResponseMessage());
 			Log.d("huqiang", String.valueOf(conn.getResponseCode()));
 			System.out.println("上传成功");
 		}
-
+		return conn.getResponseCode();
 	}
 	/**
 	 *

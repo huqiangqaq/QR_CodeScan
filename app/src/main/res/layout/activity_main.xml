@@ -5,13 +5,13 @@
     android:background="#ffe1e0de"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="扫描二维码" />
-    <Button
+    <!--<Button-->
+        <!--android:id="@+id/button1"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:text="扫描二维码" />-->
+    <!--<Button-->
         android:id="@+id/btn_start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
