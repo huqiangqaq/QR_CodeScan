@@ -1498,9 +1498,9 @@ containing a value of this type.
         public static final int auto_focus=0x7f0c0005;
         public static final int beginning=0x7f0c0023;
         public static final int bottom=0x7f0c0031;
-        public static final int btn_end=0x7f0c0059;
-        public static final int btn_start=0x7f0c0058;
-        public static final int button1=0x7f0c0057;
+        public static final int btn_end=0x7f0c0058;
+        public static final int btn_start=0x7f0c0057;
+        public static final int button1=0x7f0c005a;
         public static final int button_back=0x7f0c005c;
         public static final int cancel_button=0x7f0c006b;
         public static final int checkbox=0x7f0c003e;
@@ -1551,7 +1551,7 @@ containing a value of this type.
         public static final int quit=0x7f0c0010;
         public static final int radio=0x7f0c0040;
         public static final int restart_preview=0x7f0c0011;
-        public static final int result=0x7f0c005a;
+        public static final int result=0x7f0c0059;
         public static final int return_scan_result=0x7f0c0012;
         public static final int search_badge=0x7f0c004a;
         public static final int search_bar=0x7f0c0049;

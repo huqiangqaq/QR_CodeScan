@@ -93,9 +93,8 @@ public class MainActivity extends Activity {
 		}
 		mTextView = (TextView) findViewById(R.id.result); 
 		mimg_show = (ImageView) findViewById(R.id.img_show);
-		btn_start = (Button) findViewById(R.id.btn_start);
 		btn_end = (Button) findViewById(R.id.btn_end);
-
+		btn_start = (Button) findViewById(R.id.btn_start);
 		//扫描二维码
 		Intent intent = new Intent();
 		intent.setClass(MainActivity.this, MipcaActivityCapture.class);
@@ -114,6 +113,7 @@ public class MainActivity extends Activity {
 						dialog1.setTitleText("请先扫描二维码");
 						dialog1.setCancelable(true);
 						dialog1.show();
+						
 					}else {
 						File dir = new File(Environment.getExternalStorageDirectory(), "pictures");
 						if (dir.exists()) {

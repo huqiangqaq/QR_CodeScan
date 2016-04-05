@@ -413,9 +413,9 @@ int id always 0x7f0c0026
 int id auto_focus 0x7f0c0005
 int id beginning 0x7f0c0023
 int id bottom 0x7f0c0031
-int id btn_end 0x7f0c0059
-int id btn_start 0x7f0c0058
-int id button1 0x7f0c0057
+int id btn_end 0x7f0c0058
+int id btn_start 0x7f0c0057
+int id button1 0x7f0c005a
 int id button_back 0x7f0c005c
 int id cancel_button 0x7f0c006b
 int id checkbox 0x7f0c003e
@@ -466,7 +466,7 @@ int id progress_horizontal 0x7f0c000f
 int id quit 0x7f0c0010
 int id radio 0x7f0c0040
 int id restart_preview 0x7f0c0011
-int id result 0x7f0c005a
+int id result 0x7f0c0059
 int id return_scan_result 0x7f0c0012
 int id search_badge 0x7f0c004a
 int id search_bar 0x7f0c0049
