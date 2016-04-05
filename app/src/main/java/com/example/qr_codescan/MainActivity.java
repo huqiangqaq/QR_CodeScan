@@ -70,6 +70,8 @@ public class MainActivity extends Activity {
 	private File currentImageFile = null;
 	private boolean isLoginSuccess = true;
 	private String filename = "";
+	private String ip;
+	private static MyApplication application;
 	private Handler handler = new Handler(){
 		@Override
 		public void handleMessage(Message msg) {
@@ -88,6 +90,12 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		application = MyApplication.getInstance();
+		String ip1 = application.getIp1();
+		String ip2 = application.getIp2();
+		String ip3 =application.getIp3();
+		String ip4 = application.getIp4();
+		ip = "http://"+ip1+"."+ip2+"."+ip3+"."+ip4+":8080/";
 		if (!checkCameraHardware(MainActivity.this)){
 			Toast.makeText(MainActivity.this,"相机不可用，请更换手机",Toast.LENGTH_LONG).show();
 		}
@@ -113,7 +121,7 @@ public class MainActivity extends Activity {
 						dialog1.setTitleText("请先扫描二维码");
 						dialog1.setCancelable(true);
 						dialog1.show();
-						
+
 					}else {
 						File dir = new File(Environment.getExternalStorageDirectory(), "pictures");
 						if (dir.exists()) {
@@ -197,7 +205,7 @@ public class MainActivity extends Activity {
 					public void run() {
 						try {
 
-							int code = uploadForm(map,"upFile",currentImageFile,filename,Constants.UPLOADPAHT_Start);
+							int code = uploadForm(map,"upFile",currentImageFile,filename,ip+Constants.UPLOADPAHT_Start);
 							if (code == 200){
 								handler.sendEmptyMessage(0x123);
 							}else {
@@ -219,7 +227,7 @@ public class MainActivity extends Activity {
 					@Override
 					public void run() {
 						try {
-							int code = uploadForm(map,"upFile",currentImageFile,filename,Constants.UPLOADPATH_END);
+							int code = uploadForm(map,"upFile",currentImageFile,filename,ip+Constants.UPLOADPATH_END);
 							if (code==200){
 								handler.sendEmptyMessage(0x123);
 							}else {

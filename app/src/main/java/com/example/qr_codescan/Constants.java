@@ -5,7 +5,7 @@ package com.example.qr_codescan;
  */
 public interface Constants {
     String LOGINURL = "http://192.168.1.51:8080/ichoice/loginController.do?checkuser";
-    String UPLOADPAHT_Start = "http://192.168.1.51:8080/ichoice/pdaController.do?startXieliang";
-    String UPLOADPATH_END = "http://192.168.1.51:8080/ichoice/pdaController.do?endXieliang";
+    String UPLOADPAHT_Start = "ichoice/pdaController.do?startXieliang";
+    String UPLOADPATH_END = "ichoice/pdaController.do?endXieliang";
     String URL = "http://192.168.1.51:8080/ichoice/systemUpgradeController.do?save";
 }
